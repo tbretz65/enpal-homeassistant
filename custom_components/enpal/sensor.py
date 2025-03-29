@@ -71,25 +71,41 @@ async def async_setup_entry(
                 addSensor('mdi:home-lightning-bolt', 'Enpal Power House Total', 'power', 'W')
             elif field == "Voltage.Phase.A":
                 addSensor('mdi:lightning-bolt', 'Enpal Voltage Phase A', 'voltage', 'V')
-            elif field == "Current.Phase.A":
-                addSensor('mdi:lightning-bolt', 'Enpal Ampere Phase A', 'current', 'A') # missing
             elif field == "Power.AC.Phase.A":
                 addSensor('mdi:lightning-bolt', 'Enpal Power Phase A', 'power', 'W')
             elif field == "Voltage.Phase.B":
                 addSensor('mdi:lightning-bolt', 'Enpal Voltage Phase B', 'voltage', 'V')
-            elif field == "Current.Phase.B":
-                addSensor('mdi:lightning-bolt', 'Enpal Ampere Phase B', 'current', 'A') # missing
             elif field == "Power.AC.Phase.B":
                 addSensor('mdi:lightning-bolt', 'Enpal Power Phase B', 'power', 'W')
             elif field == "Voltage.Phase.C":
                 addSensor('mdi:lightning-bolt', 'Enpal Voltage Phase C', 'voltage', 'V')
-            elif field == "Current.Phase.C":
-                addSensor('mdi:lightning-bolt', 'Enpal Ampere Phase C', 'current', 'A') # missing
             elif field == "Power.AC.Phase.C":
                 addSensor('mdi:lightning-bolt', 'Enpal Power Phase C', 'power', 'W')
-
-            #Battery
-            elif field == "Power.Battery.Charge.Discharge":
+            elif field == "Power.DC.String.1":
+                addSensor('mdi:solar-power-variant-outline', 'Enpal Power String 1', 'power', 'W')
+            elif field == "Power.DC.String.2":
+                addSensor('mdi:solar-power-variant-outline', 'Enpal Power String 2', 'power', 'W')
+            elif field == "Power.DC.String.3":
+                addSensor('mdi:solar-power-variant-outline', 'Enpal Power String 3', 'power', 'W')
+            elif field == "Power.DC.Total":
+                addSensor('mdi:solar-power-variant-outline', 'Enpal Power Total', 'power', 'W')
+            elif field == "Power.Grid.Export":
+                addSensor('mdi:solar-power-variant-outline', 'Enpal Grid Export', 'power', 'W')
+            else:
+                _LOGGER.debug(f"Not adding measurement: {measurement} field: {field}")
+        
+        elif measurement == "powerSensor":
+            if field == "Current.Phase.A":
+                addSensor('mdi:lightning-bolt', 'Enpal Ampere Phase A', 'current', 'A')
+            elif field == "Current.Phase.B":
+                addSensor('mdi:lightning-bolt', 'Enpal Ampere Phase B', 'current', 'A')
+            elif field == "Current.Phase.C":
+                addSensor('mdi:lightning-bolt', 'Enpal Ampere Phase C', 'current', 'A')
+            else:
+                _LOGGER.debug(f"Not adding measurement: {measurement} field: {field}")
+                
+        elif measurement == "battery": #Battery
+            if field == "Power.Battery.Charge.Discharge":
                 addSensor('mdi:battery-charging', 'Enpal Battery Power', 'power', 'W')
             elif field == "Energy.Battery.Charge.Level":
                 addSensor('mdi:battery', 'Enpal Battery Percent', 'battery', '%')
@@ -98,9 +114,11 @@ async def async_setup_entry(
             elif field == "Energy.Battery.Discharge.Day":
                 addSensor('mdi:battery-arrow-down', 'Enpal Battery Discharge Day', 'energy', 'kWh')
             elif field == "Energy.Battery.Charge.Total.Unit.1":
-                addSensor('mdi:battery-arrow-up', 'Enpal Battery Charge Total', 'energy', 'kWh') # Missing
+                addSensor('mdi:battery-arrow-up', 'Enpal Battery Charge Total', 'energy', 'kWh')
             elif field == "Energy.Battery.Discharge.Total.Unit.1":
-                addSensor('mdi:battery-arrow-down', 'Enpal Battery Discharge Total', 'energy', 'kWh') # Missing
+                addSensor('mdi:battery-arrow-down', 'Enpal Battery Discharge Total', 'energy', 'kWh')
+            elif field == "Battery.SOH":
+                addSensor('mdi:battery', 'Enpal Battery Lifetime Percent', 'battery', '%')
             else:
                 _LOGGER.debug(f"Not adding measurement: {measurement} field: {field}")
 
@@ -115,6 +133,8 @@ async def async_setup_entry(
                 addSensor('mdi:transmission-tower-import', 'Enpal Energy External In Day', 'energy', 'kWh')
             elif field == "Energy.Production.Total.Day":
                 addSensor('mdi:solar-power-variant', 'Enpal Production Day', 'energy', 'kWh')
+            elif field == "Energy.Storage.Level":
+                addSensor('mdi:battery-charging-high', 'Enpal Battery Storage Level', 'energy', 'Wh')
             else:
                 _LOGGER.debug(f"Not adding measurement: {measurement} field: {field}")
 
@@ -192,7 +212,7 @@ class EnpalSensor(SensorEntity):
                 self._attr_extra_state_attributes['last_reset'] = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
                 self._attr_state_class = 'total_increasing'
 
-            if self.field == 'Percent.Storage.Level':
+            if self.field == 'Energy.Battery.Charge.Level':
                 if self._attr_native_value >= 10:
                     self._attr_icon = "mdi:battery-outline"
                 if self._attr_native_value <= 19 and self._attr_native_value >= 10:
