@@ -117,8 +117,8 @@ async def async_setup_entry(
                 addSensor('mdi:battery-arrow-up', 'Enpal Battery Charge Total', 'energy', 'kWh')
             elif field == "Energy.Battery.Discharge.Total.Unit.1":
                 addSensor('mdi:battery-arrow-down', 'Enpal Battery Discharge Total', 'energy', 'kWh')
-            elif field == "Battery.SOH":
-                addSensor('mdi:battery', 'Enpal Battery Lifetime Percent', 'battery', '%')
+            #elif field == "Battery.SOH":
+            #    addSensor('mdi:battery', 'Enpal Battery Lifetime Percent', 'battery', '%')
             else:
                 _LOGGER.debug(f"Not adding measurement: {measurement} field: {field}")
 
